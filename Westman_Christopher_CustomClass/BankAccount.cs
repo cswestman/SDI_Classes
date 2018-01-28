@@ -9,51 +9,23 @@ namespace Westman_Christopher_CustomClass
     // Declare BankAccount Class 
     class BankAccount
     {
-        // Declare member variables to be used for constructor and other methods
-        string mUserName;
-        decimal mBankingAccount = 0m;
-        decimal mCheckingAccount = 0m;
+        // Declared auto-implemented properties
+        // Refactored from SDI 
+        public string UserName { get; set; }
+        public decimal SavingsAccount { get; set; }
+        public decimal CheckingAccount { get; set; }
         // Creat a constructor that sets object values to member variables. This will create our BankAccount objects
-        public BankAccount(string _userName, decimal _bankingAccount, decimal _checkingAccount)
+        public BankAccount(string userName, decimal savingsAccount, decimal checkingAccount)
         {
-            mUserName = _userName;
-            mBankingAccount = _bankingAccount;
-            mCheckingAccount = _checkingAccount;
-        }
-        // Create a getter method for each of our object values
-        public string GetUserName()
-        {
-            return mUserName;
+            UserName = userName;
+            SavingsAccount = savingsAccount;
+            CheckingAccount = checkingAccount;
         }
 
-        public decimal GetBankingAccount()
-        {
-            return mBankingAccount;
-        }
-
-        public decimal GetCheckingAccount()
-        {
-            return mCheckingAccount;
-        }
-        // Create a setter method for each of our object variables in order to modifyt them
-        public void SetUserName(string _userName)
-        {
-            mUserName = _userName;
-        }
-
-        public void SetBanking(decimal _bankingAccount)
-        {
-            mBankingAccount = _bankingAccount;
-        }
-
-        public void SetChecking(decimal _checkingAccount)
-        {
-            mCheckingAccount = _checkingAccount;
-        }
         // Create a grand total method that will return a string formatted response to the user with their grand total
-        public string GrandTotal(decimal _bankingAccount, decimal _checkingAccount)
+        public string GrandTotal(decimal savingsAccount, decimal checkingAccount)
         {
-            decimal d_grandTotal = _bankingAccount + _checkingAccount;
+            decimal d_grandTotal = savingsAccount + checkingAccount;
             string grandTotal = d_grandTotal.ToString("C");
             return grandTotal;
         }

@@ -16,60 +16,39 @@ namespace Westman_Christopher_CustomClass
              */ 
             // Declare variables for storing input for both validation and to place in BankAccount object
             string userName;
-            double dou_userName;
-            string s_bankingAccount;
-            string s_checkingAccount;
             decimal bankingAccount;
             decimal checkingAccount;
             
             // Prompt user for name, store input, then validate 
             Console.WriteLine("Welcome to Future Bank! Please let us know your full name so can put it on your account.\r\nLetters only please.");
-            // Store input
-            userName = Console.ReadLine();
-            // Validate
-            while (string.IsNullOrWhiteSpace(userName) || double.TryParse(userName, out dou_userName))
-            {
-                Console.WriteLine("\r\nPlease type in a valid entry or do not leave blank.");
-
-                userName = Console.ReadLine();
-            }
+          
+           // Validate for string
+            userName = Validate.Input(Console.ReadLine());
+            
             // Prompt user for initial amount to place in banking account
-            Console.WriteLine("How much would you like to start with in your banking account?");
-            // Store input
-            s_bankingAccount = Console.ReadLine();
-            // Validate
-            while (string.IsNullOrWhiteSpace(s_bankingAccount) || !(decimal.TryParse(s_bankingAccount, out bankingAccount)) || 
-                bankingAccount < 0)
-            {
-                Console.WriteLine("Please type in a valid entry.");
-
-                s_bankingAccount = Console.ReadLine();
-            }
+            Console.WriteLine("How much would you like to start with in your savings account?");
+            
+            // Validate for decimal
+            bankingAccount = Validate.Input(Console.ReadLine(), "money");
+            
             // Prompt user for initial amount in checking account
             Console.WriteLine("How much would you like to start with in your checking account?");
-            // Store input
-            s_checkingAccount = Console.ReadLine();
+            
             // Validate
-            while (string.IsNullOrWhiteSpace(s_checkingAccount) || !(decimal.TryParse(s_checkingAccount, out checkingAccount)) ||
-                checkingAccount < 0)
-            {
-                Console.WriteLine("Please type in a valid entry.");
-
-                s_checkingAccount = Console.ReadLine();
-            }
+            checkingAccount = Validate.Input(Console.ReadLine(), "money");
 
             // After recieving inital information from user, build BankAccount object and use input data as object values
-            BankAccount userAccount = new BankAccount(userName, bankingAccount, checkingAccount);
+            var userAccount = new BankAccount(userName, bankingAccount, checkingAccount);
             // Brief user of account set up summary
             Console.WriteLine("\r\nThank you for your entries. Here are your details.\r\n" +
                 "Account Holder: {0}\r\n" +
-                "Banking Account Total: {1:C}\r\n" +
+                "Savings Account Total: {1:C}\r\n" +
                 "Checking Account Total: {2:C}\r\n" +
                 "Tatol Assets: {3}",
-                userAccount.GetUserName(),
-                userAccount.GetBankingAccount(),
-                userAccount.GetCheckingAccount(),
-                userAccount.GrandTotal(userAccount.GetBankingAccount(), userAccount.GetCheckingAccount()));
+                userAccount.UserName,
+                userAccount.SavingsAccount,
+                userAccount.CheckingAccount,
+                userAccount.GrandTotal(userAccount.SavingsAccount, userAccount.CheckingAccount));
             // Begin transaction loops 
             for (int i = 0; i < 3; i++)
             {
@@ -98,8 +77,8 @@ namespace Westman_Christopher_CustomClass
                 {
                     // Promt user, store input, validate
                     Console.WriteLine("\r\nWhich account would you like to withdrawal from?\r\n" +
-                        "Enter (1) for banking.\r\n" +
-                        "Enter (2) for checking.");
+                        "Enter (1) for Savings.\r\n" +
+                        "Enter (2) for Checking.");
 
                     s_input2 = Console.ReadLine();
 
@@ -119,7 +98,7 @@ namespace Westman_Christopher_CustomClass
                         s_amount = Console.ReadLine();
 
                         // Validate to check if account has enough to withdrawal
-                        while(decimal.TryParse(s_amount, out amount) && amount > userAccount.GetBankingAccount())
+                        while(decimal.TryParse(s_amount, out amount) && amount > userAccount.SavingsAccount)
                         {
                             Console.WriteLine("You do not have enough funds to withrawal from that account." +
                                 "\r\nPlease enter another amount.");
@@ -132,10 +111,8 @@ namespace Westman_Christopher_CustomClass
                             s_amount = Console.ReadLine();
 
                         }
-                        
-                        
-                        // Set new banking amount
-                        userAccount.SetBanking(userAccount.GetBankingAccount() - amount);
+                        // Set new savings amount
+                        userAccount.SavingsAccount -= amount;
                         // Call InfoCard method to display transaction brief
                         InfoCard();
                     }
@@ -148,7 +125,7 @@ namespace Westman_Christopher_CustomClass
                         s_amount = Console.ReadLine();
 
                         // Validate to check if account has enough to withdrawal
-                        while (decimal.TryParse(s_amount, out amount) && amount > userAccount.GetCheckingAccount())
+                        while (decimal.TryParse(s_amount, out amount) && amount > userAccount.CheckingAccount)
                         {
                             Console.WriteLine("You do not have enough funds to withrawal from that account." +
                                 "\r\nPlease enter another amount.");
@@ -161,7 +138,7 @@ namespace Westman_Christopher_CustomClass
                             s_amount = Console.ReadLine();
                         }
                         // Set new value for BankAccount object
-                        userAccount.SetChecking(userAccount.GetCheckingAccount() - amount);
+                        userAccount.CheckingAccount += amount;
                         // Call InfoCard method to display transaction brief
                         InfoCard();
                     }
@@ -196,8 +173,8 @@ namespace Westman_Christopher_CustomClass
                             Console.WriteLine("\r\nPlease type in a valid entry.");
                             s_amount = Console.ReadLine();
                         }
-                        // Set new banking amount
-                        userAccount.SetBanking(userAccount.GetBankingAccount() + amount);
+                        // Set new savings amount
+                        userAccount.SavingsAccount += amount;
                         // Call InfoCard method to display transaction brief
                         InfoCard();
                     }
@@ -215,7 +192,7 @@ namespace Westman_Christopher_CustomClass
                             s_amount = Console.ReadLine();
                         }
                         // Set new value to BankAccount object
-                        userAccount.SetChecking(userAccount.GetCheckingAccount() + amount);
+                        userAccount.CheckingAccount += amount;
                         // Call InfoCard method to display transaction brief
                         InfoCard();
                     }
@@ -225,26 +202,26 @@ namespace Westman_Christopher_CustomClass
             // Give user final account summary
             Console.WriteLine("\r\nThank you for your transactions. Here are your final details.\r\n" +
                 "Account Holder: {0}\r\n" +
-                "Banking Account Total: {1:C}\r\n" +
+                "Savings Account Total: {1:C}\r\n" +
                 "Checking Account Total: {2:C}\r\n" +
                 "Tatol Assets: {3}\r\n" +
                 "\r\n--------------------------------------" +
                 "\r\nThank you for banking with Future Bank" +
                 "\r\n--------------------------------------" +
                 "\r\n",
-                userAccount.GetUserName(),
-                userAccount.GetBankingAccount(),
-                userAccount.GetCheckingAccount(),
-                userAccount.GrandTotal(userAccount.GetBankingAccount(), userAccount.GetCheckingAccount()));
+                userAccount.UserName,
+                userAccount.SavingsAccount,
+                userAccount.CheckingAccount,
+                userAccount.GrandTotal(userAccount.SavingsAccount, userAccount.CheckingAccount));
             Console.ReadLine();
             // Declare InfoCard Method to keep down coding and give transaction briefs after each transaction
             void InfoCard()
             {
                 Console.WriteLine("\r\nTransaction summary:" +
-                    "\r\nBanking total: {0:C}" +
+                    "\r\nSavings total: {0:C}" +
                     "\r\nChecking total: {1:C}",
-                    userAccount.GetBankingAccount(),
-                    userAccount.GetCheckingAccount());
+                    userAccount.SavingsAccount,
+                    userAccount.CheckingAccount);
             }
 
 
